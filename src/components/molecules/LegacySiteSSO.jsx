@@ -1,14 +1,15 @@
 /**
  * LegacySiteSSO — 기존 사이트(재경캠퍼스·평생교육원) 계정으로 로그인.
  * 사이트 통합 패턴 참고: Google · 카카오 · 잡코리아+알바몬 등.
- * 6주차에 OAuth 도입 시 실제 인증 연결.
+ * 클릭 시 부모(LoginPage)의 onSelect 로 mock SSO 인증을 트리거한다.
+ * 6주차에 OAuth 도입 시 실제 인증으로 교체.
  */
 const SITES = [
   { label: '재경캠퍼스 계정', host: 'bm.douzoneedu.co.kr' },
   { label: '평생교육원 계정', host: 'academy.douzoneedu.co.kr' },
 ];
 
-export default function LegacySiteSSO() {
+export default function LegacySiteSSO({ onSelect }) {
   return (
     <div>
       <div className="flex items-center my-5 gap-3">
@@ -24,6 +25,7 @@ export default function LegacySiteSSO() {
           <button
             key={site.host}
             type="button"
+            onClick={() => onSelect?.(site)}
             className="py-2 rounded text-[11px] border border-mid-gray text-navy bg-white hover:bg-light-gray transition-colors"
           >
             {site.label}

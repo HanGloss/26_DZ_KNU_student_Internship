@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Check } from 'lucide-react';
 import PublicLayout from '../components/organisms/PublicLayout';
 import PrimaryButton from '../components/atoms/PrimaryButton';
+import { useToast } from '../components/feedback/Toast';
 
 /**
  * TermsAgreementPage — 통합 계정 약관 동의.
@@ -20,6 +21,7 @@ const REQUIRED_KEYS = ITEMS.filter((it) => it.required).map((it) => it.key);
 
 export default function TermsAgreementPage() {
   const navigate = useNavigate();
+  const toast = useToast();
   const [checks, setChecks] = useState(
     Object.fromEntries(ITEMS.map((it) => [it.key, false]))
   );
@@ -69,7 +71,17 @@ export default function TermsAgreementPage() {
                 </span>{' '}
                 {it.label}
               </span>
-              <span className="text-[10px] text-text-gray hover:underline">보기</span>
+              <span
+                role="button"
+                tabIndex={0}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  toast(`[${it.label}] 전문은 준비 중입니다`);
+                }}
+                className="text-[10px] text-text-gray hover:underline cursor-pointer"
+              >
+                보기
+              </span>
             </button>
           ))}
         </div>

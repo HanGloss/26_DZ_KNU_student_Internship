@@ -8,6 +8,7 @@ import PrimaryButton from '../components/atoms/PrimaryButton';
 import ErrorMessage from '../components/atoms/ErrorMessage';
 import Spinner from '../components/atoms/Spinner';
 import LegacySiteSSO from '../components/molecules/LegacySiteSSO';
+import { useToast } from '../components/feedback/Toast';
 import { MOCK_USER } from '../data/mockUser';
 
 /**
@@ -18,6 +19,7 @@ import { MOCK_USER } from '../data/mockUser';
  */
 export default function LoginPage({ onAuthenticated }) {
   const navigate = useNavigate();
+  const toast = useToast();
   const [email, setEmail] = useState('user@example.com');
   const [password, setPassword] = useState('p@ssword!');
   const [showPw, setShowPw] = useState(false);
@@ -41,6 +43,13 @@ export default function LoginPage({ onAuthenticated }) {
     onAuthenticated({ ...MOCK_USER, email });
     setIsSubmitting(false);
     navigate(needsMerge ? '/mergeNotice' : '/twoFactor');
+  };
+
+  const handleSSO = (site) => {
+    // 기존 사이트 계정으로 로그인 (mock) — 통합 안내 흐름으로 진입
+    onAuthenticated({ ...MOCK_USER, email: `sso@${site.host}` });
+    toast(`${site.label}으로 로그인합니다`);
+    navigate('/mergeNotice');
   };
 
   return (
@@ -88,6 +97,7 @@ export default function LoginPage({ onAuthenticated }) {
             </label>
             <button
               type="button"
+              onClick={() => toast('비밀번호 찾기는 준비 중입니다')}
               className="font-semibold text-brand hover:underline"
             >
               비밀번호 찾기 →
@@ -109,11 +119,16 @@ export default function LoginPage({ onAuthenticated }) {
           </PrimaryButton>
         </form>
 
-        <LegacySiteSSO />
+        <LegacySiteSSO onSelect={handleSSO} />
 
         <div className="text-center mt-5 text-[11px] text-text-gray">
           아직 계정이 없으신가요?{' '}
-          <button className="font-bold text-brand hover:underline">회원가입 →</button>
+          <button
+            onClick={() => toast('회원가입은 준비 중입니다')}
+            className="font-bold text-brand hover:underline"
+          >
+            회원가입 →
+          </button>
         </div>
       </div>
     </PublicLayout>

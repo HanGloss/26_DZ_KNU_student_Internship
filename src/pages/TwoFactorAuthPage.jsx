@@ -5,6 +5,7 @@ import PublicLayout from '../components/organisms/PublicLayout';
 import PrimaryButton from '../components/atoms/PrimaryButton';
 import ErrorMessage from '../components/atoms/ErrorMessage';
 import Spinner from '../components/atoms/Spinner';
+import { useToast } from '../components/feedback/Toast';
 
 /**
  * TwoFactorAuthPage — 2차 인증 (mock).
@@ -14,6 +15,7 @@ import Spinner from '../components/atoms/Spinner';
  */
 export default function TwoFactorAuthPage({ user }) {
   const navigate = useNavigate();
+  const toast = useToast();
   const [code, setCode] = useState('');
   const [error, setError] = useState(null);
   const [isVerifying, setIsVerifying] = useState(false);
@@ -74,9 +76,19 @@ export default function TwoFactorAuthPage({ user }) {
         </PrimaryButton>
 
         <div className="flex items-center justify-center gap-3 mt-4 text-[11px]">
-          <button className="text-brand hover:underline">인증 코드 재발송</button>
+          <button
+            onClick={() => toast('인증 코드를 재발송했습니다')}
+            className="text-brand hover:underline"
+          >
+            인증 코드 재발송
+          </button>
           <span className="text-mid-gray">·</span>
-          <button className="text-text-gray hover:underline">다른 방법으로 인증</button>
+          <button
+            onClick={() => toast('다른 인증 방법은 준비 중입니다')}
+            className="text-text-gray hover:underline"
+          >
+            다른 방법으로 인증
+          </button>
         </div>
       </div>
     </PublicLayout>
