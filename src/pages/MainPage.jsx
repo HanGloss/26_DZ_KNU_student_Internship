@@ -35,15 +35,17 @@ export default function MainPage({ user, onLogout }) {
     return () => clearTimeout(t);
   }, []);
 
-  // 검색어 + 카테고리로 추천 목록 필터링
+  // 검색어 + 카테고리로 필터링 후, 매칭도(confidence) 내림차순 정렬
   const filtered = useMemo(() => {
     const kw = searchKeyword.trim();
-    return recommendations.filter((rec) => {
-      const haystack = `${rec.courseNm} ${rec.venue} ${rec.reason}`;
-      const matchKw = !kw || haystack.includes(kw);
-      const matchCat = !activeCategory || haystack.includes(activeCategory);
-      return matchKw && matchCat;
-    });
+    return recommendations
+      .filter((rec) => {
+        const haystack = `${rec.courseNm} ${rec.venue} ${rec.reason}`;
+        const matchKw = !kw || haystack.includes(kw);
+        const matchCat = !activeCategory || haystack.includes(activeCategory);
+        return matchKw && matchCat;
+      })
+      .sort((a, b) => (b.confidence ?? 0) - (a.confidence ?? 0));
   }, [recommendations, searchKeyword, activeCategory]);
 
   const handleLogout = () => {
@@ -101,7 +103,7 @@ export default function MainPage({ user, onLogout }) {
         <CategoryCarousel active={activeCategory} onSelect={setActiveCategory} />
 
         <footer className="mt-10 pt-4 border-t border-mid-gray text-center text-[10px] text-text-gray">
-          © 2026 더존비앤씨티 · Education Business Unit
+          © 2026 재경 링크 · 학습용 프로토타입 (비공식)
         </footer>
       </main>
 

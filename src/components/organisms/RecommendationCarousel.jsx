@@ -22,7 +22,7 @@ export default function RecommendationCarousel({ recommendations, isLoading, onC
         onClick={() => scrollByPage(-1)}
         aria-label="이전 추천"
         className="absolute z-10 w-9 h-9 rounded-full bg-white shadow-lg flex items-center justify-center hover:shadow-xl transition-shadow text-navy"
-        style={{ left: -14, top: 88 }}
+        style={{ left: -14, top: 78 }}
       >
         <ChevronLeft size={18} strokeWidth={2.5} />
       </button>
@@ -30,7 +30,7 @@ export default function RecommendationCarousel({ recommendations, isLoading, onC
         onClick={() => scrollByPage(1)}
         aria-label="다음 추천"
         className="absolute z-10 w-9 h-9 rounded-full bg-white shadow-lg flex items-center justify-center hover:shadow-xl transition-shadow text-navy"
-        style={{ right: -14, top: 88 }}
+        style={{ right: -14, top: 78 }}
       >
         <ChevronRight size={18} strokeWidth={2.5} />
       </button>
@@ -46,9 +46,9 @@ export default function RecommendationCarousel({ recommendations, isLoading, onC
                 <div
                   key={i}
                   className="flex-shrink-0 bg-white rounded-lg p-3 animate-pulse"
-                  style={{ width: 192, height: 208, scrollSnapAlign: 'start' }}
+                  style={{ width: 192, height: 280, scrollSnapAlign: 'start' }}
                 >
-                  <div className="w-full h-20 bg-light-gray rounded mb-3" />
+                  <div className="w-full h-24 bg-light-gray rounded mb-3" />
                   <div className="w-3/4 h-3 bg-light-gray rounded mb-2" />
                   <div className="w-1/2 h-3 bg-light-gray rounded" />
                 </div>

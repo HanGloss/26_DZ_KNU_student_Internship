@@ -1,14 +1,28 @@
 import { useState } from 'react';
-import { X, Calendar, MapPin, Clock, Sparkles, CheckCircle2 } from 'lucide-react';
+import {
+  X, Calendar, MapPin, Clock, CheckCircle2,
+  History, Tag, TrendingUp, GitBranch,
+} from 'lucide-react';
+import StageBadge from '../molecules/StageBadge';
 
 /**
- * ClickModal — 추천 카드 클릭 시 표시되는 상세 모달.
- * "수강 신청하기"는 DB 없이 신청 완료(mock) 상태로 전환해 피드백을 준다.
- * 6주차에 /courses/:id 라우팅 + POST /api/enrollment 으로 교체.
+ * ClickModal — 추천 카드 클릭 시 상세 모달.
+ * 매칭도 바 + "어느 부분에서 매칭됐는지" 근거(matchFactors)를 보여준다.
+ * "수강 신청하기"는 DB 없이 완료(mock) 상태로 전환.
  */
+const FACTOR_CONFIG = {
+  history: { label: '학습 이력', Icon: History, cls: 'bg-pale-blue text-brand' },
+  interest: { label: '관심 분야', Icon: Tag, cls: 'bg-pale-orange text-orange' },
+  level: { label: '역량 단계', Icon: TrendingUp, cls: 'bg-pale-green text-green' },
+  trend: { label: '학습 흐름', Icon: GitBranch, cls: 'bg-pale-purple text-navy' },
+};
+
 export default function ClickModal({ rec, onClose }) {
   const [applied, setApplied] = useState(false);
   if (!rec) return null;
+
+  const pct = Math.round((rec.confidence ?? 0) * 100);
+  const factors = rec.matchFactors ?? [];
 
   return (
     <div
@@ -41,8 +55,10 @@ export default function ClickModal({ rec, onClose }) {
           </div>
         ) : (
           <>
-            <div className="flex items-start justify-between mb-4">
-              <h3 className="text-base font-bold text-navy">{rec.courseNm}</h3>
+            <div className="flex items-start justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <h3 className="text-base font-bold text-navy">{rec.courseNm}</h3>
+              </div>
               <button
                 onClick={onClose}
                 aria-label="닫기"
@@ -52,14 +68,48 @@ export default function ClickModal({ rec, onClose }) {
               </button>
             </div>
 
-            <div className="rounded-lg p-3 mb-3 border-l-4 border-brand bg-pale-blue">
-              <div className="text-[10px] font-bold mb-1 flex items-center gap-1 text-brand">
-                <Sparkles size={11} /> 추천 이유
+            {/* 매칭도 */}
+            <div className="rounded-lg p-3 mb-3 bg-light-gray">
+              <div className="flex items-center justify-between mb-1.5">
+                <div className="flex items-center gap-1.5">
+                  <StageBadge stage={rec.stage} />
+                  <span className="text-[11px] text-text-gray">로 추천된 과정</span>
+                </div>
+                <span className="text-lg font-extrabold text-brand leading-none">{pct}%</span>
               </div>
-              <div className="text-xs text-navy leading-relaxed">{rec.reason}</div>
+              <div className="h-2 rounded-full bg-white overflow-hidden">
+                <div
+                  className="h-full rounded-full bg-gradient-to-r from-brand to-accent"
+                  style={{ width: `${pct}%` }}
+                />
+              </div>
+              <div className="text-[10px] text-text-gray mt-1">나와의 매칭도</div>
             </div>
 
-            <div className="space-y-2 mb-4 text-xs">
+            {/* 매칭 근거 */}
+            {factors.length > 0 && (
+              <div className="mb-3">
+                <div className="text-[11px] font-bold text-navy mb-2">이런 점에서 추천해요</div>
+                <div className="space-y-1.5">
+                  {factors.map((f, i) => {
+                    const c = FACTOR_CONFIG[f.kind] ?? FACTOR_CONFIG.history;
+                    const { label, Icon, cls } = c;
+                    return (
+                      <div key={i} className="flex items-center gap-2">
+                        <span className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold shrink-0 ${cls}`}>
+                          <Icon size={11} />
+                          {label}
+                        </span>
+                        <span className="text-xs text-navy">{f.text}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* 메타 */}
+            <div className="space-y-2 mb-4 text-xs border-t border-mid-gray/30 pt-3">
               <MetaRow icon={Calendar} label="일정" value={rec.sessionDate} />
               <MetaRow icon={MapPin} label="장소" value={rec.venue} />
               <MetaRow icon={Clock} label="학습량" value={rec.duration} />
@@ -90,7 +140,7 @@ function MetaRow({ icon: Icon, label, value }) {
   return (
     <div className="flex items-center gap-2">
       <Icon size={12} className="text-text-gray" />
-      <span className="text-text-gray">{label}</span>
+      <span className="text-text-gray w-10">{label}</span>
       <span className="font-semibold text-navy">{value}</span>
     </div>
   );

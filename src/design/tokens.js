@@ -23,4 +23,5 @@ export const tokens = {
   paleGreen: '#E8F5EE',
   paleOrange: '#FCEEDD',
   paleRed: '#FBEBE7',
+  palePurple: '#F2EAFA',
 };

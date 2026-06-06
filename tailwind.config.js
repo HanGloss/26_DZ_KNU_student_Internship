@@ -17,6 +17,7 @@ export default {
         'pale-green': '#E8F5EE',
         'pale-orange': '#FCEEDD',
         'pale-red': '#FBEBE7',
+        'pale-purple': '#F2EAFA',
       },
       fontFamily: {
         sans: ['Pretendard', 'Noto Sans KR', 'system-ui', 'sans-serif'],

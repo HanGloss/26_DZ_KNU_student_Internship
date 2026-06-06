@@ -13,7 +13,7 @@ export default function PublicLayout({ children }) {
         </div>
         {children}
         <div className="text-center mt-5 text-[10px] text-white/70">
-          더존비앤씨티 · Education Business Unit
+          재경 링크 · 학습용 프로토타입
         </div>
       </div>
     </div>
