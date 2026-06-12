@@ -18,9 +18,13 @@ const CATEGORIES = [
  */
 export default function CategoryCarousel({ active, onSelect }) {
   return (
-    <div className="mt-8">
-      <div className="text-sm font-bold text-navy mb-2">카테고리별 둘러보기</div>
-      <div className="flex gap-2 overflow-x-auto pb-2 no-scrollbar">
+    <div className="mb-6">
+      <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
+        <CategoryChip
+          label="전체"
+          active={!active}
+          onClick={() => onSelect?.(null)}
+        />
         {CATEGORIES.map((cat) => (
           <CategoryChip
             key={cat}

@@ -46,7 +46,7 @@ export default function RecommendationCarousel({ recommendations, isLoading, onC
                 <div
                   key={i}
                   className="flex-shrink-0 bg-white rounded-lg p-3 animate-pulse"
-                  style={{ width: 192, height: 280, scrollSnapAlign: 'start' }}
+                  style={{ width: 240, height: 300, scrollSnapAlign: 'start' }}
                 >
                   <div className="w-full h-24 bg-light-gray rounded mb-3" />
                   <div className="w-3/4 h-3 bg-light-gray rounded mb-2" />
@@ -57,7 +57,7 @@ export default function RecommendationCarousel({ recommendations, isLoading, onC
                 <div
                   key={rec.recId}
                   className="flex-shrink-0"
-                  style={{ width: 192, scrollSnapAlign: 'start' }}
+                  style={{ width: 240, scrollSnapAlign: 'start' }}
                 >
                   <CourseCard rec={rec} onClick={() => onCardClick?.(rec)} />
                 </div>

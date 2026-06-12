@@ -1,14 +1,15 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { SearchX } from 'lucide-react';
+import { SearchX, Flame, Briefcase } from 'lucide-react';
 
 import Header from '../components/organisms/Header';
 import RecommendationCarousel from '../components/organisms/RecommendationCarousel';
+import RelatedRail from '../components/organisms/RelatedRail';
 import CategoryCarousel from '../components/organisms/CategoryCarousel';
 import ClickModal from '../components/organisms/ClickModal';
 import SectionHeader from '../components/molecules/SectionHeader';
 import { useToast } from '../components/feedback/Toast';
-import { MOCK_RECOMMENDATIONS } from '../data/mockRecommendations';
+import { MOCK_RECOMMENDATIONS, enrichRecommendations } from '../data/mockRecommendations';
 
 /**
  * MainPage — 인증 후 진입 화면.
@@ -29,7 +30,7 @@ export default function MainPage({ user, onLogout }) {
 
   useEffect(() => {
     const t = setTimeout(() => {
-      setRecommendations(MOCK_RECOMMENDATIONS);
+      setRecommendations(enrichRecommendations(MOCK_RECOMMENDATIONS));
       setIsLoading(false);
     }, 700);
     return () => clearTimeout(t);
@@ -47,6 +48,29 @@ export default function MainPage({ user, onLogout }) {
       })
       .sort((a, b) => (b.confidence ?? 0) - (a.confidence ?? 0));
   }, [recommendations, searchKeyword, activeCategory]);
+
+  // 이주의 인기 강의: 수강생 수 상위 → 강사 인기 보조 정렬
+  const popularRail = useMemo(
+    () =>
+      [...recommendations]
+        .sort(
+          (a, b) =>
+            (b.enrolledCount ?? 0) - (a.enrolledCount ?? 0) ||
+            (b.instructor?.popularity ?? 0) - (a.instructor?.popularity ?? 0),
+        )
+        .slice(0, 4),
+    [recommendations],
+  );
+
+  // 같은 직무 동료가 듣는 강의: 세무/회계 직무 가정 — 오프라인·실무 비중 높은 과정 우선
+  const peerRail = useMemo(
+    () =>
+      [...recommendations]
+        .filter((r) => r.courseType !== 'ONLINE')
+        .sort((a, b) => (b.confidence ?? 0) - (a.confidence ?? 0))
+        .slice(0, 4),
+    [recommendations],
+  );
 
   const handleLogout = () => {
     onLogout?.();
@@ -71,6 +95,8 @@ export default function MainPage({ user, onLogout }) {
       />
 
       <main className="max-w-6xl mx-auto px-4 py-8">
+        <CategoryCarousel active={activeCategory} onSelect={setActiveCategory} />
+
         <SectionHeader
           title={`${user?.userNm ?? '회원'}님을 위한 추천 과정`}
           subtitle={
@@ -100,7 +126,26 @@ export default function MainPage({ user, onLogout }) {
           />
         )}
 
-        <CategoryCarousel active={activeCategory} onSelect={setActiveCategory} />
+        {!isFiltering && !isLoading && (
+          <>
+            <RelatedRail
+              icon={Flame}
+              title="이주의 인기 강의"
+              subtitle="가장 많은 수강생이 선택한 과정"
+              accentCls="bg-pale-orange text-orange"
+              items={popularRail}
+              onCardClick={setClickedRec}
+            />
+            <RelatedRail
+              icon={Briefcase}
+              title={`${user?.companyNm ?? '세무·회계'} 직무 동료가 듣는 강의`}
+              subtitle="같은 직무에서 많이 수강하는 실무 과정"
+              accentCls="bg-pale-blue text-brand"
+              items={peerRail}
+              onCardClick={setClickedRec}
+            />
+          </>
+        )}
 
         <footer className="mt-10 pt-4 border-t border-mid-gray text-center text-[10px] text-text-gray">
           © 2026 재경 링크 · 학습용 프로토타입 (비공식)

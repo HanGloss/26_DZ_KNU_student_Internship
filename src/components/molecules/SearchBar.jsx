@@ -17,7 +17,7 @@ export default function SearchBar({ value, onChange, placeholder = '원하는 �
         value={value}
         onChange={onChange}
         placeholder={placeholder}
-        className="w-full pl-9 pr-3 py-2 text-sm rounded-lg bg-light-gray border border-transparent focus:bg-white focus:border-brand focus:outline-none transition-colors"
+        className="w-full pl-9 pr-3 py-2 text-sm text-navy rounded-lg bg-light-gray border border-transparent placeholder:text-text-gray focus:bg-white focus:border-brand focus:outline-none transition-colors"
       />
     </div>
   );
