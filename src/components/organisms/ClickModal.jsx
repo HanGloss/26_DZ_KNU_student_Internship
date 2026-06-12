@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import {
   X, Calendar, MapPin, Clock, CheckCircle2,
-  History, Tag, TrendingUp, GitBranch,
+  History, Tag, TrendingUp, GitBranch, Award, Star, Users,
 } from 'lucide-react';
 import StageBadge from '../molecules/StageBadge';
+import InstructorAvatar from '../atoms/InstructorAvatar';
 
 /**
  * ClickModal — 추천 카드 클릭 시 상세 모달.
@@ -15,6 +16,7 @@ const FACTOR_CONFIG = {
   interest: { label: '관심 분야', Icon: Tag, cls: 'bg-pale-orange text-orange' },
   level: { label: '역량 단계', Icon: TrendingUp, cls: 'bg-pale-green text-green' },
   trend: { label: '학습 흐름', Icon: GitBranch, cls: 'bg-pale-purple text-navy' },
+  instructor: { label: '인기 강사', Icon: Award, cls: 'bg-pale-red text-red' },
 };
 
 export default function ClickModal({ rec, onClose }) {
@@ -85,6 +87,32 @@ export default function ClickModal({ rec, onClose }) {
               </div>
               <div className="text-[10px] text-text-gray mt-1">나와의 매칭도</div>
             </div>
+
+            {/* 강사 프로필 */}
+            {rec.instructor && (
+              <div className="flex items-center gap-3 rounded-lg p-3 mb-3 border border-mid-gray/30">
+                <div className="shrink-0 rounded-full shadow-sm">
+                  <InstructorAvatar seed={rec.instructor.avatarSeed} size={48} />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-sm font-bold text-navy">{rec.instructor.name}</span>
+                    <span className="text-[11px] text-text-gray">{rec.instructor.title}</span>
+                  </div>
+                  <div className="flex items-center gap-3 text-[11px] mt-0.5">
+                    <span className="flex items-center gap-1 text-orange font-bold">
+                      <Star size={12} fill="currentColor" strokeWidth={0} />
+                      {rec.instructor.rating.toFixed(1)}
+                    </span>
+                    <span className="flex items-center gap-1 text-text-gray">
+                      <Users size={12} />
+                      후기 {rec.instructor.reviewCount.toLocaleString()}건
+                    </span>
+                  </div>
+                  <p className="text-[10px] text-text-gray mt-1 line-clamp-2">{rec.instructor.bio}</p>
+                </div>
+              </div>
+            )}
 
             {/* 매칭 근거 */}
             {factors.length > 0 && (
